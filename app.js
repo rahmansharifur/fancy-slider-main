@@ -23,6 +23,18 @@ document.getElementById("search").addEventListener("keypress", function(event) {
 // to create your own api key
 const KEY = '15674931-a9d714b6e9d654524df198e00&q';
 
+
+
+const getImages = (query) => {
+    const url = (`https://pixabay.com/api/?key=${KEY}&q=${query}&image_type=photo&pretty=true`)
+    toggleSpinner();
+    fetch(url)
+        .then(response => response.json())
+        .then(data => showImages(data.hits))
+        .catch(err => console.log(err))
+}
+
+
 // show images 
 const showImages = (images) => {
     imagesArea.style.display = 'block';
@@ -33,16 +45,11 @@ const showImages = (images) => {
         let div = document.createElement('div');
         div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
         div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
-        gallery.appendChild(div)
+        gallery.appendChild(div);
     })
+    toggleSpinner();
 
-}
 
-const getImages = (query) => {
-    fetch(`https://pixabay.com/api/?key=${KEY}&q=${query}&image_type=photo&pretty=true`)
-        .then(response => response.json())
-        .then(data => showImages(data.hits))
-        .catch(err => console.log(err))
 }
 
 let slideIndex = 0;
@@ -50,10 +57,15 @@ const selectItem = (event, img) => {
     let element = event.target;
 
     element.classList.toggle('added');
+    console.log(element.classList)
 
     let item = sliders.indexOf(img);
     if (item === -1) {
         sliders.push(img);
+        console.log(sliders)
+
+    } else {
+        sliders.splice(item, 1)
 
     }
 }
@@ -79,7 +91,7 @@ const createSlider = () => {
     imagesArea.style.display = 'none';
     const duration = document.getElementById('duration').value || 1000;
     if (duration < 0) {
-        alert("Duration number can not be negativ!!!")
+        displayerror();
     } else {
         sliders.forEach(slide => {
             let item = document.createElement('div')
@@ -132,8 +144,23 @@ searchBtn.addEventListener('click', function() {
     getImages(search.value)
     console.log(search);
     sliders.length = 0;
+
 })
 
 sliderBtn.addEventListener('click', function() {
     createSlider()
 })
+
+const displayerror = error => {
+    const errorTag = document.getElementById('error-message');
+    errorTag.innerText = error;
+
+
+}
+const toggleSpinner = () => {
+    const spinner = document.getElementById('loading-spinner');
+
+    spinner.classList.toggle('d-none');
+
+
+}
