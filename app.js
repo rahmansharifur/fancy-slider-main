@@ -73,7 +73,7 @@ var timer
 const createSlider = () => {
     // check slider image length
     if (sliders.length < 2) {
-        alert('Select at least 2 image.')
+        displayerror(false);
         return;
     }
     // crate slider previous next area
@@ -91,7 +91,7 @@ const createSlider = () => {
     imagesArea.style.display = 'none';
     const duration = document.getElementById('duration').value || 1000;
     if (duration < 0) {
-        displayerror();
+        displayerror(true);
     } else {
         sliders.forEach(slide => {
             let item = document.createElement('div')
@@ -148,15 +148,22 @@ searchBtn.addEventListener('click', function() {
 })
 
 sliderBtn.addEventListener('click', function() {
-    createSlider()
-})
+        createSlider()
+    })
+    //    error massage
 
-const displayerror = error => {
+const displayerror = (error) => {
     const errorTag = document.getElementById('error-message');
-    errorTag.innerText = error;
-
+    if (error) {
+        errorTag.innerText = `Duration not to be negative number!!!`
+    } else {
+        errorTag.innerText = `Select at least 2 image.`
+    }
 
 }
+
+// spinner
+
 const toggleSpinner = () => {
     const spinner = document.getElementById('loading-spinner');
 
